@@ -1,0 +1,8 @@
+.idea/
+
+*__pycache__/
+
+/auth_data/auth_data.py
+
+
+
