@@ -1,8 +1,8 @@
-import sys
-
-import requests
 import csv
 from pprint import pprint
+import sys
+
+from libs.api_wrapper import api_wrapper
 import libs.auth_lib as auth_lib
 
 
@@ -11,10 +11,19 @@ def main(argc, argv):
     username = auth_lib.get_username()
     password = auth_lib.get_password()
 
-    response = requests.get(
-        f"{instance_url}/api/now/table/incident",
-        auth=(username, password)
-    )
+    # In this example we have 2 possible ways to do API calls. First approach is through the usage of a wrapper class.
+    # We create the APIWrapper object instance passing it the UserCredentials object and the instance url.
+    # Then we use the call_function functionality to query calls without the need to pass the user, password and url.
+    user_credentials = api_wrapper.UserCredentials(username, password)
+    api_wrapper_object = api_wrapper.APIWrapper(user_credentials, instance_url)
+    response_using_class = api_wrapper_object.call_function(api_wrapper.get_table, 'incident')
+
+    # The other approach is using the regular function that requires the user, password and url to be passed at every
+    # call, but do not require the creation of an APIWrapper instance, neither a UserCredentials object.
+    response_stand_alone = api_wrapper.get_table(username, password, instance_url, 'incident')
+
+    # The below section turns the incidents into a csv file, used as an example only, should be abstracted into its own
+    # functionality down the road.
 
     # csv_file = open("./incidents.csv", "w")
     # csv_writer = csv.writer(csv_file)
@@ -32,7 +41,9 @@ def main(argc, argv):
     #
     # csv_file.close()
 
-    pprint(response.json())
+    pprint(response_using_class.json())
+
+    pprint(response_stand_alone.json())
 
 if __name__ == '__main__':
     main(len(sys.argv), sys.argv)
