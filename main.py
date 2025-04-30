@@ -6,7 +6,7 @@ from libs.api_wrapper import api_wrapper
 import libs.auth_lib as auth_lib
 
 
-def main(argc, argv):
+def main(argc, *argv):
     instance_url = auth_lib.get_instance_url()
     username = auth_lib.get_username()
     password = auth_lib.get_password()
