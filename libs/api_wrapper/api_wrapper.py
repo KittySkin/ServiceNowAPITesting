@@ -26,9 +26,12 @@ class APIWrapper:
         return function_pointer(self.user_credentials.username, self.user_credentials.password, self.instance_url, *args)
 
 
-def get_table(username, password, instance_url, table_name):
+def get_table(username, password, instance_url, table_name, sys_id=None):
+    endpoint_url = f"{instance_url}/api/now/table/{table_name}"
+    if sys_id:
+        endpoint_url += f'/{sys_id}'
     response = requests.get(
-        f"{instance_url}/api/now/table/{table_name}",
+        url=endpoint_url,
         auth=(username, password)
     )
     return response

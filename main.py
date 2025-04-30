@@ -41,9 +41,13 @@ def main(argc, *argv):
     #
     # csv_file.close()
 
-    pprint(response_using_class.json())
+    # Sample handling status code before attempting to manipulate the response:
+    if response_using_class.status_code == 200:
+        pprint(response_using_class.json())
 
-    pprint(response_stand_alone.json())
+    if response_stand_alone.status_code == 200:
+        pprint(response_stand_alone.json())
+
 
 if __name__ == '__main__':
     main(len(sys.argv), sys.argv)
