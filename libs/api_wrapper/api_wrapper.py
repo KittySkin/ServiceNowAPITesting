@@ -16,23 +16,31 @@ class APIWrapper:
         self.user_credentials = user_credentials
         self.instance_url = instance_url
 
-    def call_function(self, function_pointer, *args):
+    def call_function(self, function_pointer, *args, **kwargs):
         """
         Calls the function passing the user credentials and url automatically.
         :param function_pointer: Function to be called.
         :param args: comma separated arguments to be passed to the function.
         :return: Output of the function call.
         """
-        return function_pointer(self.user_credentials.username, self.user_credentials.password, self.instance_url, *args)
+        return function_pointer(self.user_credentials.username, self.user_credentials.password, self.instance_url, *args, **kwargs)
 
 
-def get_table(username, password, instance_url, table_name, sys_id=None):
+def get_table(username, password, instance_url, table_name, sys_id=None, category=None):
+    print(category)
+    print(sys_id)
+    print(table_name)
     endpoint_url = f"{instance_url}/api/now/table/{table_name}"
+    # Construct the query string and URL encode it
+    if category:
+        endpoint_url += f"?sysparm_query=category%3D{category}"
+
     if sys_id:
         endpoint_url += f'/{sys_id}'
     response = requests.get(
         url=endpoint_url,
-        auth=(username, password)
+        auth=(username, password),
+        headers={"Content-Type": "application/json", "Accept": "application/json"}
     )
     return response
 
