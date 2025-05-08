@@ -15,8 +15,8 @@ def main(argc, *argv):
     # We create the APIWrapper object instance passing it the UserCredentials object and the instance url.
     # Then we use the call_function functionality to query calls without the need to pass the user, password and url.
     user_credentials = api_wrapper.UserCredentials(username, password)
-    api_wrapper_object = api_wrapper.APIWrapper(user_credentials, instance_url)
-    response_using_class = api_wrapper_object.call_function(api_wrapper.get_table, 'incident', category='hardware')
+    awo = api_wrapper.APIWrapper(user_credentials, instance_url)
+    response_using_class = awo.call(api_wrapper.get_table, 'incident', category='hardware')
 
     # The other approach is using the regular function that requires the user, password and url to be passed at every
     # call, but do not require the creation of an APIWrapper instance, neither a UserCredentials object.
