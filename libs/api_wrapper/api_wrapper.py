@@ -28,14 +28,27 @@ class APIWrapper:
                                 *args, **kwargs)
 
 
-def get_table(username, password, instance_url, table_name, sys_id=None, category=None):
+def get_table(username, password, instance_url, table_name, sys_id=None, category=None, sysparam_query=None):
+    """
+    Gets a table by name. sys_id and category are optional and sysparam_query overwrite category.
+    :param username: Username to perform the request.
+    :param password: Password to perform the request.
+    :param instance_url: Instance URL to perform the request.
+    :param table_name: Table name to retrieve.
+    :param sys_id: sys_id to search the table for.
+    :param category: Category to search within the table.
+    :param sysparam_query: Complex query parameters formatted like REST API url extensions.
+    :return: Response type object with execution code and table content.
+    """
     endpoint_url = f"{instance_url}/api/now/table/{table_name}"
     # Construct the query string and URL encode it
     if sys_id:
         endpoint_url += f'/{sys_id}'
 
-    if category:
-        endpoint_url += f"?sysparm_query=category%3D{category}"
+    if sysparam_query:
+        endpoint_url += f"?sysparm_query={sysparam_query}"
+    elif category:
+        endpoint_url += f"?sysparm_query=category={category}&sysparm_limit=1"
 
     response = requests.get(
         url=endpoint_url,
@@ -63,6 +76,7 @@ def post_table(username, password, instance_url, table_name, update_data):
     response = requests.post(
         f"{instance_url}/api/now/table/{table_name}",
         auth=(username, password),
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
         data=update_data
     )
     return response

@@ -16,7 +16,13 @@ def main(argc, *argv):
     # Then we use the call_function functionality to query calls without the need to pass the user, password and url.
     user_credentials = api_wrapper.UserCredentials(username, password)
     awo = api_wrapper.APIWrapper(user_credentials, instance_url)
-    response_using_class = awo.call(api_wrapper.get_table, 'incident', category='hardware')
+    # response_using_class = awo.call(api_wrapper.get_table, 'incident', category='hardware')
+    data_to_post = {'short_description':'Creating software incident from a dict',
+                    'assignment_group':'287ebd7da9fe198100f92cc8d1d2154e',
+                    'urgency':'2',
+                    'impact':'2',
+                    'category':'software'}
+    post_using_class = awo.call(api_wrapper.post_table, table_name='incident', update_data=f"{data_to_post}")
 
     # The other approach is using the regular function that requires the user, password and url to be passed at every
     # call, but do not require the creation of an APIWrapper instance, neither a UserCredentials object.
@@ -42,12 +48,15 @@ def main(argc, *argv):
     # csv_file.close()
 
     # Sample handling status code before attempting to manipulate the response:
-    if response_using_class.status_code == 200:
-        pprint(response_using_class.json())
+    # if response_using_class.status_code == 200:
+    #     pprint(response_using_class.json())
 
     # if response_stand_alone.status_code == 200:
     #    pprint(response_stand_alone.json())
 
+    print(post_using_class)
+    if post_using_class.status_code == 201:
+        pprint(post_using_class.json())
 
 if __name__ == '__main__':
     main(len(sys.argv), sys.argv)
